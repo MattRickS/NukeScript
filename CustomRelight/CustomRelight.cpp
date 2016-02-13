@@ -1,7 +1,7 @@
 kernel CustomRelight : ImageComputationKernel<ePixelWise>
 {
-  Image<eRead, eAccessPoint, eEdgeClamped> pos;
-  Image<eRead, eAccessPoint, eEdgeClamped> normal;
+  Image<eRead, eAccessPoint, eEdgeNone> pos;
+  Image<eRead, eAccessPoint, eEdgeNone> normal;
   Image<eWrite> dst;
 
   param:
