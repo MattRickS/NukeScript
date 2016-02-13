@@ -1,4 +1,4 @@
-kernel AdvancedRelight_withSpotlight : ImageComputationKernel<ePixelWise>
+kernel CustomRelight : ImageComputationKernel<ePixelWise>
 {
   Image<eRead, eAccessPoint, eEdgeClamped> pos;
   Image<eRead, eAccessPoint, eEdgeClamped> normal;
