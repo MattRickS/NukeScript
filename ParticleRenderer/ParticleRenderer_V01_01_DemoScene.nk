@@ -1,0 +1,134 @@
+#! C:/Program Files/Nuke9.0v8/nuke-9.0.8.dll -nx
+#write_info Write1 file:"" format:"1024 1024 1" chans:":rgba.red:rgba.green:rgba.blue:" framerange:"1 20" fps:"0" colorspace:"default (sRGB)" datatype:"8 bit" transfer:"unknown" views:"main"
+version 9.0 v8
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="0" y="0" w="1932" h="1079" screen="0">
+        <splitter orientation="1">
+            <split size="40"/>
+            <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                <page id="Toolbar.1"/>
+            </dock>
+            <split size="1253" stretch="1"/>
+            <splitter orientation="2">
+                <split size="678"/>
+                <dock id="" activePageId="Viewer.1">
+                    <page id="Viewer.1"/>
+                </dock>
+                <split size="335"/>
+                <dock id="" activePageId="DAG.1" focus="true">
+                    <page id="DAG.1"/>
+                    <page id="Curve Editor.1"/>
+                    <page id="DopeSheet.1"/>
+                </dock>
+            </splitter>
+            <split size="615"/>
+            <dock id="" activePageId="Properties.1">
+                <page id="Properties.1"/>
+            </dock>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+ inputs 0
+ name C:/Users/Matthew/.nuke/plugins/ParticleRenderer/ParticleRenderer_V01_01_DemoScene.nk
+ frame 17
+ last_frame 20
+ lock_range true
+ fps 25
+ format "1440 810 0 0 1440 810 1 \"3/4 HD\""
+ proxy_type scale
+ proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+}
+Reformat {
+ inputs 0
+ format "128 128 0 0 128 128 1 128"
+ name Reformat6
+ xpos 1012
+ ypos -791
+}
+Radial {
+ area {1 0.8000001907 127.5999985 127}
+ name Radial2
+ xpos 1012
+ ypos -735
+}
+Dot {
+ name Dot1
+ note_font_size 20
+ xpos 1046
+ ypos -615
+}
+Read {
+ inputs 0
+ file "C:/Users/Matthew/.nuke/plugins/ParticleRenderer/Demo Render/Burst_%04d.exr"
+ format "5 5 0 0 5 5 1 "
+ last 17
+ origlast 17
+ origset true
+ name Read1
+ xpos 688
+ ypos -800
+}
+Dot {
+ name Dot5
+ xpos 722
+ ypos -615
+}
+Camera2 {
+ inputs 0
+ translate {0 39.29999924 154.1999969}
+ rotate {15.39317513 17.3944291 0}
+ name Camera1
+ xpos 863
+ ypos -797
+}
+add_layer {position position.red position.green position.blue position.alpha}
+add_layer {active active.red active.green active.blue active.alpha active.r}
+add_layer {velocity velocity.red velocity.green velocity.blue velocity.alpha}
+ParticleRenderer_V01_01.gizmo {
+ inputs 3
+ name ParticleRenderer_V01_01_1
+ xpos 853
+ ypos -619
+ psize 4
+ format "1024 1024 0 0 1024 1024 1 square_1K"
+ translate {-97.5 119 -150.8000031}
+ uniform_scale 5
+ pcloud true
+ in position
+ in_1 {active.red -active.green -active.blue -active.alpha}
+ in_2 velocity
+ use_psize true
+ use_pcol true
+}
+set N6696a00 [stack 0]
+push $N6696a00
+VectorBlur {
+ uv forward
+ scale 0.07
+ grow_bbox 50
+ method forward
+ alpha rgba.alpha
+ name VectorBlur1
+ xpos 853
+ ypos -522
+}
+Write {
+ file_type png
+ checkHashOnRead false
+ version 1
+ name Write1
+ xpos 853
+ ypos -448
+}
+Viewer {
+ inputs 2
+ frame 17
+ frame_range 1-20
+ fps 25
+ name Viewer1
+ xpos 991
+ ypos -356
+}

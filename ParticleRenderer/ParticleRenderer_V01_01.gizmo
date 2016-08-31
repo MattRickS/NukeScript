@@ -1,0 +1,925 @@
+#! C:/Program Files/Nuke9.0v8/nuke-9.0.8.dll -nx
+version 9.0 v8
+add_layer {position position.red position.green position.blue position.alpha}
+add_layer {active active.red active.green active.blue active.alpha active.r}
+add_layer {velocity velocity.red velocity.green velocity.blue velocity.alpha}
+Gizmo {
+ inputs 4
+ addUserKnob {20 User}
+ addUserKnob {6 add_velocity l "Add Velocity" t "Adds a velocity pass.\nVelocity is automatically added for single pixel and opaque non-filtered images." +STARTLINE}
+ add_velocity true
+ addUserKnob {6 add_depth l "Add Depth" t "Adds a depth pass.\nDepth is automatically added for single pixel and opaque non-filtered images." +STARTLINE}
+ add_depth true
+ addUserKnob {6 use_filter l "Use Filter Image" +STARTLINE}
+ use_filter true
+ addUserKnob {6 use_zclip l "Use Depth Clipping" +STARTLINE}
+ addUserKnob {6 use_zmask l "Use Depth Mask" +STARTLINE}
+ addUserKnob {6 single l "Single Pixel" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {7 psize l "Particle Size"}
+ psize 1
+ addUserKnob {7 depth_range l "Depth Range" R 100 10000}
+ depth_range 10000
+ addUserKnob {26 ""}
+ addUserKnob {41 format l "output format" T OUTPUT_FORMAT.format}
+ addUserKnob {7 overscan l Overscan R 0 100}
+ addUserKnob {20 positiontab l Position t "Knobs for positioning the effect in 3D space"}
+ addUserKnob {41 translate T TransformGeo1.translate}
+ addUserKnob {41 rotate T TransformGeo1.rotate}
+ addUserKnob {41 scaling l scale T TransformGeo1.scaling}
+ addUserKnob {41 uniform_scale l "uniform scale" T TransformGeo1.uniform_scale}
+ addUserKnob {22 bbox l "Update Bounding Box" t "Calculates the bounds of the particles and displays a bounding box. If Center Pivot is on, will offset the particles so the pivot is central." T ParticleRenderer.setBoundingBox() +STARTLINE}
+ addUserKnob {6 center_pivot l "Center Pivot" t "If checked, the particles will be moved so that the pivot is central when updating the bounding box." -STARTLINE}
+ center_pivot true
+ addUserKnob {26 ""}
+ addUserKnob {6 pcloud l "View Point Cloud" +STARTLINE}
+ addUserKnob {41 detail l "point detail" T PositionToPoints1.detail}
+ addUserKnob {26 ""}
+ addUserKnob {20 inputab l Input}
+ addUserKnob {41 in l Position T ParticlePosition.in}
+ addUserKnob {41 in_1 l Active T Active.in}
+ addUserKnob {41 in_2 l Velocity T Velocity.in}
+ addUserKnob {6 use_psize l "Use Particle Size" +STARTLINE}
+ addUserKnob {6 use_pcol l "Use Particle Colour" +STARTLINE}
+ addUserKnob {6 rot_only l "Camera Rotation Only" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {3 nth l "Use Every Nth Pixel"}
+ nth 1
+ addUserKnob {26 ""}
+ addUserKnob {6 safety l Safety +STARTLINE}
+ safety true
+ addUserKnob {41 "MAIN_V01_01_Edge Disable" l "Edge Disable" T "MAIN.MAIN_V01_01_Edge Disable"}
+ addUserKnob {3 safety_limit l "Safety Limit"}
+ safety_limit 100
+ addUserKnob {20 animation l Animation t "Additional animation for particles"}
+ addUserKnob {6 use_move l "Use Extra Animation" +STARTLINE}
+ addUserKnob {41 BlinkMove_V01_01_Loop l Loop T BlinkMove1.BlinkMove_V01_01_Loop}
+ addUserKnob {31 resize l Resize}
+ addUserKnob {26 ""}
+ addUserKnob {41 BlinkMove_V01_01_worldSpaceMove l worldSpaceMove T BlinkMove1.BlinkMove_V01_01_worldSpaceMove}
+ addUserKnob {41 BlinkMove_V01_01_Movement l Movement T BlinkMove1.BlinkMove_V01_01_Movement}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  tile_color 0x388e8e00
+  label INPUTS
+  note_font_size 42
+  xpos -399
+  ypos -1778
+  bdwidth 1643
+  bdheight 658
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode2
+  tile_color 0xaaaaaa00
+  label "ADDITIONAL MOVEMENT"
+  note_font_size 42
+  xpos -400
+  ypos -1066
+  bdwidth 803
+  bdheight 572
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode3
+  tile_color 0x8e8e3800
+  label RENDER
+  note_font_size 42
+  xpos -775
+  ypos -446
+  bdwidth 1994
+  bdheight 1096
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode4
+  tile_color 0x388e8e00
+  label "<center>ADDITIONAL PASSES</center>"
+  note_font_size 42
+  xpos -776
+  ypos 713
+  bdwidth 1194
+  bdheight 602
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode5
+  tile_color 0x388e8e00
+  label FORMAT
+  note_font_size 42
+  xpos 550
+  ypos -1064
+  bdwidth 173
+  bdheight 268
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode8
+  tile_color 0x8e388e00
+  label "PREVIEW GEO"
+  note_font_size 42
+  xpos -776
+  ypos -911
+  bdwidth 306
+  bdheight 418
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode6
+  tile_color 0x7171c600
+  label "SINGLE PIXEL"
+  note_font_size 42
+  xpos -756
+  ypos -345
+  bdwidth 286
+  bdheight 816
+  z_order 1
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode7
+  tile_color 0x7171c600
+  label MAIN
+  note_font_size 42
+  xpos 92
+  ypos -345
+  bdwidth 697
+  bdheight 978
+  z_order 1
+ }
+ Input {
+  inputs 0
+  name Inputcam
+  label "INPUT 0"
+  xpos -133
+  ypos -1682
+ }
+ Input {
+  inputs 0
+  name Inputparticles
+  label "INPUT 1"
+  xpos 305
+  ypos -1688
+  number 1
+ }
+ Reformat {
+  type scale
+  name Reformat1
+  xpos 305
+  ypos -1431
+ }
+ Dot {
+  name Dot3
+  note_font_size 20
+  xpos 339
+  ypos -1375
+ }
+set N6d45000 [stack 0]
+ Shuffle {
+  in {active.red -active.green -active.blue -active.alpha}
+  alpha red
+  name Active
+  label "<font size = \"5\"> \[value in]"
+  xpos 305
+  ypos -1315
+  postage_stamp true
+ }
+ Dot {
+  name Dot19
+  note_font_size 20
+  xpos 339
+  ypos -1019
+ }
+set N6d44800 [stack 0]
+push $N6d45000
+ Dot {
+  name Dot4
+  note_font_size 20
+  xpos 102
+  ypos -1375
+ }
+set N6d44400 [stack 0]
+ Shuffle {
+  in position
+  name ParticlePosition
+  label "<font size = \"5\"> \[value in]"
+  xpos 68
+  ypos -1317
+  postage_stamp true
+ }
+ Dot {
+  name Dot50
+  note_font_size 20
+  xpos 102
+  ypos -1019
+ }
+set N6d45c00 [stack 0]
+ Expression {
+  inputs 1+1
+  expr0 "r( x, y - rows)"
+  expr1 "g( x, y - rows)"
+  expr2 "b( x, y - rows)"
+  maskChannelMask rgba.red
+  invert_mask true
+  name Position_Checker
+  xpos 193
+  ypos -1023
+  addUserKnob {20 User}
+  addUserKnob {3 rows l "Blank rows"}
+  rows {{"ceil( ( pow(input.height,2) - pow(input.height - 1,2) ) / input.height )"}}
+ }
+ Cube {
+  inputs 0
+  display wireframe
+  selectable false
+  render_mode off
+  cast_shadow false
+  receive_shadow false
+  rows 1
+  columns 1
+  cube {{"parent.BoundingBox.cube - parent.resize/2"} {"parent.BoundingBox.cube - parent.resize/2"} {"parent.BoundingBox.cube - parent.resize/2"} {"parent.BoundingBox.cube + parent.resize/2"} {"parent.BoundingBox.cube + parent.resize/2"} {"parent.BoundingBox.cube + parent.resize/2"}}
+  name LoopBox
+  xpos -602
+  ypos -773
+ }
+push $N6d45c00
+ Add {
+  value {0 0 0 0}
+  name Offset
+  xpos 68
+  ypos -973
+ }
+ Dot {
+  name Dot17
+  note_font_size 20
+  xpos 102
+  ypos -907
+ }
+set N34103c00 [stack 0]
+ Dot {
+  name Dot23
+  note_font_size 20
+  xpos -351
+  ypos -907
+ }
+ BlinkScript {
+  ProgramGroup 1
+  KernelDescription "1 \"BlinkMove_V01_01\" iterate pixelWise 05b60efeb6ba78ad0afe9a58fd618b890403c65e0cfdda9a38236653d5e05351 2 \"position\" Read Point \"dst\" Write Point 6 \"Movement\" Float 4 AAAAAAAAAAAAAAAAAAAAAA== \"worldSpaceMove\" Bool 1 AA== \"Loop\" Bool 1 AQ== \"Frame\" Int 1 AAAAAA== \"bbox\" Float 6 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= \"bboxT\" Float 16 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+  kernelSource "kernel BlinkMove_V01_01 : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead> position;\n  Image<eWrite> dst;\n\n\n  param:\n    float4 movement;\n    bool worldSpaceMove;\n    //bool worldSpaceBbox;\n    bool loopBbox;\n    int frame;\n    float bbox\[6];\n    float4x4 bboxT;\n\n\n  local:\n    float4 dir_movement;\n    float3 bboxSize;\n    float4x4 bboxT_Inv;\n\n\n  float4 multVectMatrix( float4 vec, float4x4 M )\n  \{\n    // Rotation only\n    float4 out = float4(\n      vec.x * M\[0]\[0] + vec.y * M\[0]\[1] + vec.z * M\[0]\[2],// + M\[0]\[3],\n      vec.x * M\[1]\[0] + vec.y * M\[1]\[1] + vec.z * M\[1]\[2],// + M\[1]\[3],\n      vec.x * M\[2]\[0] + vec.y * M\[2]\[1] + vec.z * M\[2]\[2],// + M\[2]\[3],\n      vec.w\n    );\n    return out;\n  \}\n\n\n  void define()\n  \{\n    defineParam( movement, \"Movement\", float4( 0.0f, 0.0f, 0.0f, 0.0f ) );\n    defineParam( loopBbox, \"Loop\", true );\n    defineParam( frame, \"Frame\", 0 );\n  \}\n\n\n  void init()\n  \{\n\n    // Max Size for each dimension\n    for ( int component = 0; component < 3; component++ )\n      bboxSize\[ component ] = fabs( bbox\[ component + 3 ] - bbox\[ component ] );\n\n    // Transform movement direction to world space, multiply by frame\n    bboxT_Inv = bboxT.invert();\n    if ( worldSpaceMove )\n      dir_movement = multVectMatrix( movement, bboxT_Inv ) * frame;\n    else\n      dir_movement = movement * frame;\n  \}\n\n\n  void process()\n  \{\n    // Add movement to current position\n    float4 start = position();\n    if ( start.w <= 0.0f )\n      return;\n\n    float4 current = start;\n    //if ( worldSpaceBbox )\n    //  current = multVectMatrix( current, bboxT );\n\n    float4 new_pos = current + dir_movement;\n\n    if ( loopBbox ) \{\n      for ( int component = 0; component < 3; component++ ) \{\n        if ( new_pos\[ component ] < bbox\[ component ] )\n          new_pos\[ component ] = bbox\[ component + 3 ] - fmod( bbox\[ component + 3 ] - new_pos\[ component ], bboxSize\[ component ] );\n        if ( bbox\[ component + 3 ] < new_pos\[ component ] )\n          new_pos\[ component ] = bbox\[ component ] - fmod( bbox\[ component ] - new_pos\[ component ], bboxSize\[ component ] );\n      \}\n    \}\n\n    //if ( worldSpaceBbox )\n    //  new_pos = multVectMatrix( new_pos - current, bboxT_Inv ) + current; //multVectMatrix( new_pos - current, bboxT_Inv ) + current;\n\n    dst() = new_pos;\n    return;\n  \}\n\n\};"
+  rebuild ""
+  BlinkMove_V01_01_Movement {0 0 0 0}
+  BlinkMove_V01_01_Frame {{frame}}
+  BlinkMove_V01_01_bbox {{parent.LoopBox.cube} {parent.LoopBox.cube} {parent.LoopBox.cube} {parent.LoopBox.cube} {parent.LoopBox.cube} {parent.LoopBox.cube}}
+  BlinkMove_V01_01_bboxT {
+      {{parent.TransformGeo1.matrix.0} {parent.TransformGeo1.matrix.1} {parent.TransformGeo1.matrix.2} {parent.TransformGeo1.matrix.3}}
+      {{parent.TransformGeo1.matrix.4} {parent.TransformGeo1.matrix.5} {parent.TransformGeo1.matrix.6} {parent.TransformGeo1.matrix.7}}
+      {{parent.TransformGeo1.matrix.8} {parent.TransformGeo1.matrix.9} {parent.TransformGeo1.matrix.10} {parent.TransformGeo1.matrix.11}}
+      {{parent.TransformGeo1.matrix.12} {parent.TransformGeo1.matrix.13} {parent.TransformGeo1.matrix.14} {parent.TransformGeo1.matrix.15}}
+    }
+  name BlinkMove1
+  xpos -385
+  ypos -780
+ }
+ Dot {
+  name Dot16
+  note_font_size 20
+  xpos -351
+  ypos -646
+ }
+push $N34103c00
+ Switch {
+  inputs 2
+  which {{parent.use_move}}
+  name Switch1
+  xpos 68
+  ypos -650
+ }
+ Dot {
+  name Dot49
+  note_font_size 20
+  xpos 102
+  ypos -590
+ }
+set N34102800 [stack 0]
+ PositionToPoints2 {
+  render_mode off
+  cast_shadow false
+  receive_shadow false
+  P_channel rgb
+  name PositionToPoints1
+  xpos -605
+  ypos -594
+ }
+ Cube {
+  inputs 0
+  display wireframe
+  selectable false
+  render_mode off
+  cast_shadow false
+  receive_shadow false
+  rows 1
+  columns 1
+  separate_faces false
+  cube {-80.41784668 -51.47262955 -106.3403015 80.41784668 51.47262955 106.3403015}
+  name BoundingBox
+  xpos -752
+  ypos -774
+ }
+ MergeGeo {
+  inputs 3
+  name MergeGeo1
+  xpos -752
+  ypos -594
+  disable {{"1 - parent.pcloud"}}
+ }
+ TransformGeo {
+  name TransformGeo1
+  xpos -752
+  ypos -542
+ }
+ Input {
+  inputs 0
+  name Inputdepth_mask
+  label "INPUT 3"
+  xpos 1141
+  ypos -1698
+  number 3
+ }
+ Constant {
+  inputs 0
+  name Constant1
+  xpos 949
+  ypos -1262
+ }
+ Dot {
+  name Dot6
+  note_font_size 20
+  xpos 983
+  ypos -1155
+ }
+set N6d6ec00 [stack 0]
+ Switch {
+  inputs 2
+  which {{parent.use_zmask}}
+  name Switch5
+  xpos 1141
+  ypos -1159
+ }
+ Dot {
+  name Dot18
+  note_font_size 20
+  xpos 1175
+  ypos -143
+ }
+set N6d6e400 [stack 0]
+ Dot {
+  name Dot21
+  note_font_size 20
+  xpos -585
+  ypos -143
+ }
+push $N6d44400
+ Dot {
+  name Dot8
+  note_font_size 20
+  xpos -60
+  ypos -1375
+ }
+ Shuffle {
+  in velocity
+  name Velocity
+  label "<font size = \"5\"> \[value in]"
+  xpos -94
+  ypos -1320
+  postage_stamp true
+ }
+ Dot {
+  name Dot20
+  note_font_size 20
+  xpos -60
+  ypos -842
+ }
+set N6d8d400 [stack 0]
+ Dot {
+  name Dot24
+  note_font_size 20
+  xpos -213
+  ypos -842
+ }
+ Add {
+  value {{parent.BlinkMove.BlinkMove_Movement.r} {parent.BlinkMove.BlinkMove_Movement.g} {parent.BlinkMove.BlinkMove_Movement.b} {parent.BlinkMove.BlinkMove_Movement.a}}
+  name Add1
+  xpos -247
+  ypos -778
+ }
+ Dot {
+  name Dot22
+  note_font_size 20
+  xpos -213
+  ypos -702
+ }
+push $N6d8d400
+ Switch {
+  inputs 2
+  which {{parent.use_move}}
+  name Switch2
+  xpos -94
+  ypos -706
+ }
+ Dot {
+  name Dot2
+  note_font_size 20
+  xpos -60
+  ypos 67
+ }
+set N6d8c000 [stack 0]
+ Dot {
+  name Dot43
+  note_font_size 20
+  xpos -200
+  ypos 67
+ }
+set N340d7c00 [stack 0]
+ TimeOffset {
+  time_offset -1
+  time ""
+  name TimeOffset1
+  xpos -234
+  ypos 147
+ }
+push $N6d8c000
+ BlinkScript {
+  inputs 2
+  ProgramGroup 1
+  KernelDescription "1 \"ParticleMatch\" iterate pixelWise 5ba061ce1e162230b867b37924e0b23a4a5b7b6cb32db9a8262ac55f6a870ee4 3 \"current\" Read Point \"next\" Read Random \"dst\" Write Point 0"
+  kernelSource "kernel ParticleMatch : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead> current;\n  Image<eRead, eAccessRandom> next;\n  Image<eWrite> dst;\n\n  void process( int2 pos )\n  \{\n    float4 cur = current();\n    // Only match pixels within current frame bounds, and with existing ids\n    if ( current.bounds.inside( pos ) && cur.w != 0.0f )\n    \{\n      // Buffer pixel value iteration\n      int max_x = pos.y * current.bounds.width() + pos.x;\n      //int max_x = pow( current.bounds.width(), 2 );\n      for ( int x = max_x; x >= 0; x-- )\n      \{\n        float4 nxt = next( x, 0 );\n        if ( nxt.w == cur.w )\n        \{\n          dst() = nxt;\n          return;\n        \}\n      \}\n    \}\n\n    dst() = 0.0f;\n  \}\n\};"
+  rebuild ""
+  format "3 3 0 0 3 3 1 test"
+  name BlinkScript5
+  xpos -94
+  ypos 141
+ }
+ Dot {
+  name Dot29
+  note_font_size 20
+  xpos -60
+  ypos 228
+ }
+set N340d7400 [stack 0]
+ Dot {
+  name Dot41
+  note_font_size 20
+  xpos -492
+  ypos 228
+ }
+push $N340d7c00
+push $N6d45000
+ Dot {
+  name Dot36
+  note_font_size 20
+  xpos 491
+  ypos -1375
+ }
+ Dot {
+  name Dot9
+  note_font_size 20
+  xpos 491
+  ypos -82
+ }
+set N340d6800 [stack 0]
+ Dot {
+  name Dot32
+  note_font_size 20
+  xpos -494
+  ypos -82
+ }
+push $N34102800
+ Dot {
+  name Dot27
+  note_font_size 20
+  xpos 102
+  ypos -265
+ }
+set N34102400 [stack 0]
+ Dot {
+  name Dot25
+  note_font_size 20
+  xpos -746
+  ypos -265
+ }
+ Dot {
+  name Dot40
+  note_font_size 20
+  xpos -746
+  ypos 67
+ }
+ Reformat {
+  inputs 0
+  name OUTPUT_FORMAT
+  xpos 602
+  ypos -933
+ }
+ Reformat {
+  type "to box"
+  box_width {{"parent.OUTPUT_FORMAT.format.width + parent.overscan*2"}}
+  box_height {{"parent.OUTPUT_FORMAT.format.height + parent.overscan*2"}}
+  resize distort
+  black_outside true
+  name Reformat3
+  xpos 602
+  ypos -883
+ }
+ Dot {
+  name Dot46
+  note_font_size 20
+  xpos 636
+  ypos -203
+ }
+set N34126800 [stack 0]
+ Dot {
+  name Dot47
+  note_font_size 20
+  xpos -672
+  ypos -203
+ }
+ Dot {
+  name Dot48
+  note_font_size 20
+  xpos -672
+  ypos -77
+ }
+ BlinkScript {
+  inputs 6
+  ProgramGroup 1
+  KernelDescription "1 \"SinglePixel_V01_01\" iterate pixelWise a94b8b23e714e98b54a3c41569152f9b5bc56b2a56ccca9e6ffac88682295c91 7 \"format\" Read Point \"particles\" Read Point \"particle_colour\" Read Point \"velocity\" Read Point \"velocityNext\" Read Point \"depth\" Read Random \"dst\" Write Random 14 \"Use Depth Clipping\" Bool 1 AQ== \"Use Depth Mask\" Bool 1 AA== \"Add Velocity\" Bool 1 AQ== \"Reduction\" Int 1 AQAAAA== \"Width\" Int 1 oAUAAA== \"Height\" Int 1 KgMAAA== \"Overscan\" Float 1 AAAAAA== \"Depth Range\" Float 1 AAB6RA== \"Horizontal Aperture\" Float 1 ppvEQQ== \"Focal Length\" Float 1 AABIQg== \"Near Clipping\" Float 1 zczMPQ== \"Far Clipping\" Float 1 AEAcRg== \"Camera Matrix\" Float 16 AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPw== \"Particle Matrix\" Float 16 AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPw=="
+  kernelSource "kernel SinglePixel_V01_01 : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead> format;\n  Image<eRead, eAccessPoint> particles;\n  Image<eRead, eAccessPoint> particle_colour;\n  Image<eRead, eAccessPoint> velocity;\n  Image<eRead, eAccessPoint> velocityNext;\n  Image<eRead, eAccessRandom> depth;\n  Image<eWrite, eAccessRandom> dst;\n\n\n  param:\n    bool use_zclip;\n    bool use_depth;\n    bool add_velocity;\n    int reduce;\n    int width;\n    int height;\n    float overscan;\n    float depth_max;\n    float haperture;\n    float focal;\n    float znear;\n    float zfar;\n    float4x4 camToWorldM;\n    float4x4 particleTransform;\n\n\n  local:\n    float4x4 worldToCamM;\n    float4x4 perspM;\n\n\n  // Multiplies a vector 4 by a 4x4 matrix (COLUMN ORDER) (Affine and homogenous)\n  float4 multVectMatrix( float4 vec, float4x4 M ) \{\n    float4 out;\n    out\[0]  = vec.x * M\[0]\[0] + vec.y * M\[0]\[1] + vec.z * M\[0]\[2] + M\[0]\[3];\n    out\[1]  = vec.x * M\[1]\[0] + vec.y * M\[1]\[1] + vec.z * M\[1]\[2] + M\[1]\[3];\n    out\[2]  = vec.x * M\[2]\[0] + vec.y * M\[2]\[1] + vec.z * M\[2]\[2] + M\[2]\[3];\n    float w = vec.x * M\[3]\[0] + vec.y * M\[3]\[1] + vec.z * M\[3]\[2] + M\[3]\[3];\n \n    if (w != 1.0f) \{ \n        out.x /= w; \n        out.y /= w; \n        out.z /= w; \n    \} \n\n    return out;\n  \}\n\n\n  void define() \{\n    defineParam( use_zclip,         \"Use Depth Clipping\",     true );\n    defineParam( use_depth,         \"Use Depth Mask\",         false );\n    defineParam( add_velocity,      \"Add Velocity\",           true );\n    defineParam( reduce,            \"Reduction\",              1 );\n    defineParam( width,             \"Width\",                  1440 );\n    defineParam( height,            \"Height\",                 810 );\n    defineParam( overscan,          \"Overscan\",               0.0f );\n    defineParam( depth_max,         \"Depth Range\",            1000.0f );\n    defineParam( haperture,         \"Horizontal Aperture\",    24.576f );\n    defineParam( focal,             \"Focal Length\",           50.0f );\n    defineParam( znear,             \"Near Clipping\",          0.1f );\n    defineParam( zfar,              \"Far Clipping\",           10000.0f );\n    defineParam( camToWorldM,       \"Camera Matrix\",          float4x4(\n             1.0f,0.0f,0.0f,0.0f,\n             0.0f,1.0f,0.0f,0.0f,\n             0.0f,0.0f,1.0f,0.0f,\n             0.0f,0.0f,0.0f,1.0f\n             ));\n    defineParam( particleTransform, \"Particle Matrix\",        float4x4(\n             1.0f,0.0f,0.0f,0.0f,\n             0.0f,1.0f,0.0f,0.0f,\n             0.0f,0.0f,1.0f,0.0f,\n             0.0f,0.0f,0.0f,1.0f\n             ));\n  \}\n\n\n  void init() \{\n\n    // Matrix from world space to camera local space\n    worldToCamM = camToWorldM.invert();\n\n    // Output image aspect\n    float aspect = width / float( height );\n\n    // Corner co-ordinates of the viewing frustrum\n    float right = ( 0.5f * haperture / focal) * znear;\n    float left = -right;\n    float top = right / aspect;\n    float bottom = -top;\n\n    // Set the Perspective Matrix ( Fits camera space to screen space)\n    perspM\[0]\[0] = ( 2 * znear ) / ( right - left );\n    perspM\[0]\[2] = ( right + left ) / ( right - left );\n    perspM\[1]\[1] = ( 2 * znear ) / ( top - bottom );\n    perspM\[1]\[2] = ( top + bottom ) / ( top - bottom );\n    perspM\[2]\[2] = - ( ( zfar + znear ) / ( zfar - znear ) );\n    perspM\[2]\[3] = - ( ( 2 * zfar * znear ) / ( zfar - znear ) );\n    perspM\[3]\[2] = -1;\n\n  \}\n\n\n  void process( int2 pos ) \{\n\n    // --- Convert to screen space, eliminating out of range points ---\n\n    // Reduction and out of bounds checks\n    int id = ( pos.y * particles.bounds.width() + pos.x );\n    if ( !particles.bounds.inside( pos ) || id % reduce != 0.0f )\n      return;\n\n    float4 particle = particles();\n\n    // If particle has size 0 / doesn't exist\n    if ( particle.w == 0.0f )\n      return;\n\n    // Transform the particle to desired location, then to camera local space\n    float4 particleSpace = multVectMatrix( particle, particleTransform );\n    float4 point_local = multVectMatrix( particleSpace, worldToCamM );\n\n    // Check if position is in front of camera\n    if ( point_local.z > 0.0f )\n      return;\n\n    // Transform position to screen space\n    float4 screen_center = multVectMatrix( point_local, perspM );\n\n    // Trim points outside of clipping planes\n    if ( use_zclip && ( screen_center.z < -1.0f || 1.0f < screen_center.z ) )\n      return;\n\n\n    // --- Target Position and Depth ---\n\n    // Fit screen space to NDC space ( 0 to 1 range ), multiply to get centerpoint pixel\n    float ct_x = ( screen_center.x + 1 ) * 0.5f * width + overscan;\n    float ct_y = ( screen_center.y + 1 ) * 0.5f * height + overscan;\n    if ( !dst.bounds.inside( ct_x, ct_y ) )\n      return;\n    \n    // Normalise desired depth range ( 1 @ cam, 0 @ depth_max )\n    float zdepth = 1.0f + point_local.z / depth_max;\n\n\n    // --- Optional depth masking ---\n\n    // Clip points beyond the depth mask\n    if ( use_depth && depth_max != 0.0f ) \{\n      // Move this to filter size settings? More accurate, slower\n      int depth_x = floor( ( screen_center.x + 1 ) * 0.5f * depth.bounds.width() );\n      int depth_y = floor( ( screen_center.y + 1 ) * 0.5f * depth.bounds.height() );\n      float depth_mask = depth( depth_x, depth_y, 0 ); // Use channel_id as picked by user from a channel dropdown (r=0, g=1 etc...)\n      if ( zdepth < depth_mask )\n        return;\n    \}\n\n    // --- Velocity ---\n\n    float2 out_vel;\n    if ( add_velocity ) \{\n      // Calculate position from previous frame, project, and trace screen space vector motion\n      // Particles previous and next position\n      float4 vel = velocity();\n      float4 prev = particle - vel;\n      float4 next = particle + velocityNext();\n\n      // Smooth derivative of the particle at current point\n      float4 dir = prev - next;\n      // Apply velocity length to smoothed direction\n      dir\[3] = 0.0f;\n      vel\[3] = 0.0f;\n      dir = normalize(dir) * length(vel);\n\n      // Move new end position to screen space\n      particleSpace = multVectMatrix( particle + dir, particleTransform );\n      point_local = multVectMatrix( particleSpace, worldToCamM );\n      screen_center = multVectMatrix( point_local, perspM );\n\n      // Calculate screen velocity\n      float last_x = ( screen_center.x + 1 ) * 0.5f * width + overscan;\n      float last_y = ( screen_center.y + 1 ) * 0.5f * height + overscan;\n      out_vel = float2( ct_x - last_x, ct_y - last_y );\n      \n    \}\n\n\n    // Only set foremost pixel\n    if ( dst( ct_x, ct_y, 3 ) > zdepth )\n      return;\n\n    dst( ct_x, ct_y, 0 ) = float( id + 1 );\n    dst( ct_x, ct_y, 1 ) = out_vel.x;\n    dst( ct_x, ct_y, 2 ) = out_vel.y;\n    dst( ct_x, ct_y, 3 ) = zdepth;\n  \n  \}\n\n\};"
+  rebuild ""
+  "SinglePixel_V01_01_Use Depth Clipping" {{parent.use_zclip}}
+  "SinglePixel_V01_01_Use Depth Mask" {{parent.use_zmask}}
+  SinglePixel_V01_01_Reduction {{parent.nth}}
+  SinglePixel_V01_01_Width {{parent.OUTPUT_FORMAT.format.width}}
+  SinglePixel_V01_01_Height {{parent.OUTPUT_FORMAT.format.height}}
+  SinglePixel_V01_01_Overscan {{parent.overscan}}
+  "SinglePixel_V01_01_Depth Range" {{parent.depth_range}}
+  "SinglePixel_V01_01_Horizontal Aperture" {{"\[topnode group.input0].haperture"}}
+  "SinglePixel_V01_01_Focal Length" {{"\[topnode group.input0].focal"}}
+  "SinglePixel_V01_01_Near Clipping" {{"\[topnode group.input0].near"}}
+  "SinglePixel_V01_01_Far Clipping" {{"\[topnode group.input0].far"}}
+  "SinglePixel_V01_01_Camera Matrix" {
+      {{"\[topnode group.input0].matrix.0"} {"\[topnode group.input0].matrix.1"} {"\[topnode group.input0].matrix.2"} {"parent.rot_only ? 0 : \[topnode group.input0].matrix.3"}}
+      {{"\[topnode group.input0].matrix.4"} {"\[topnode group.input0].matrix.5"} {"\[topnode group.input0].matrix.6"} {"parent.rot_only ? 0 : \[topnode group.input0].matrix.7"}}
+      {{"\[topnode group.input0].matrix.8"} {"\[topnode group.input0].matrix.9"} {"\[topnode group.input0].matrix.10"} {"parent.rot_only ? 0 : \[topnode group.input0].matrix.11"}}
+      {{"\[topnode group.input0].matrix.12"} {"\[topnode group.input0].matrix.13"} {"\[topnode group.input0].matrix.14"} {"\[topnode group.input0].matrix.15"}}
+    }
+  "SinglePixel_V01_01_Particle Matrix" {
+      {{parent.TransformGeo1.matrix.0} {parent.TransformGeo1.matrix.1} {parent.TransformGeo1.matrix.2} {parent.TransformGeo1.matrix.3}}
+      {{parent.TransformGeo1.matrix.4} {parent.TransformGeo1.matrix.5} {parent.TransformGeo1.matrix.6} {parent.TransformGeo1.matrix.7}}
+      {{parent.TransformGeo1.matrix.8} {parent.TransformGeo1.matrix.9} {parent.TransformGeo1.matrix.10} {parent.TransformGeo1.matrix.11}}
+      {{parent.TransformGeo1.matrix.12} {parent.TransformGeo1.matrix.13} {parent.TransformGeo1.matrix.14} {parent.TransformGeo1.matrix.15}}
+    }
+  name SINGLE_PIXEL
+  xpos -619
+  ypos 57
+ }
+ Dot {
+  name Dot31
+  note_font_size 20
+  xpos -585
+  ypos 379
+ }
+set N34147800 [stack 0]
+ Dot {
+  name Dot37
+  note_font_size 20
+  xpos -718
+  ypos 379
+ }
+ Dot {
+  name Dot38
+  note_font_size 20
+  xpos -718
+  ypos 888
+ }
+set N34147000 [stack 0]
+ Dot {
+  name Dot39
+  note_font_size 20
+  xpos -718
+  ypos 995
+ }
+push $N34147000
+push $N340d6800
+ Dot {
+  name Dot28
+  xpos 491
+  ypos 439
+ }
+set N34146800 [stack 0]
+push $N34147800
+ BlinkScript {
+  inputs 2
+  ProgramGroup 1
+  KernelDescription "1 \"IDToColour\" iterate pixelWise 5d4b28b875c5baabc8fb0c3fdeaeb71ad1c8cf74b5dd8551b994f67060ec0cd9 3 \"src\" Read Point \"col\" Read Random \"dst\" Write Point 1 \"use_pcol\" Bool 1 AA=="
+  kernelSource "kernel IDToColour : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead> src;\n  Image<eRead, eAccessRandom> col;\n  Image<eWrite> dst;\n\n  param:\n    bool use_pcol;\n\n  void process() \{\n    int id = int( src(0) ) - 1;\n    if ( id < 0 )\n      return;\n    if ( !use_pcol ) \{\n      dst() = 1.0f;\n      return;\n    \}\n    int x = id % col.bounds.width();\n    int y = id / col.bounds.width();\n    dst() = col( x, y );\n  \}\n\};"
+  rebuild ""
+  IDToColour_use_pcol {{parent.use_pcol}}
+  name BlinkScript1
+  xpos -619
+  ypos 429
+ }
+ Remove {
+  operation keep
+  channels rgba
+  name Remove1
+  xpos -619
+  ypos 785
+ }
+ Copy {
+  inputs 2
+  from3 rgba.alpha
+  to3 depth.Z
+  name Copy1
+  label ADD_DEPTH
+  xpos -619
+  ypos 865
+  disable {{"1 - parent.add_depth"}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.green
+  to0 forward.u
+  from1 rgba.blue
+  to1 forward.v
+  name Copy2
+  label ADD_VELOCITY
+  xpos -619
+  ypos 972
+  disable {{"1 - parent.add_velocity"}}
+ }
+ Dot {
+  name Dot26
+  note_font_size 20
+  xpos -585
+  ypos 1196
+ }
+push $N6d6e400
+ Dot {
+  name Dot11
+  note_font_size 20
+  xpos 1175
+  ypos 60
+ }
+set N34171000 [stack 0]
+ Dot {
+  name Dot12
+  note_font_size 20
+  xpos 568
+  ypos 60
+ }
+ Input {
+  inputs 0
+  name Inputfilter
+  label "INPUT 2"
+  xpos 733
+  ypos -1694
+  number 2
+ }
+push $N6d6ec00
+ Switch {
+  inputs 2
+  which {{parent.use_filter}}
+  name Switch3
+  xpos 733
+  ypos -1159
+ }
+ Dot {
+  name Dot13
+  note_font_size 20
+  xpos 767
+  ypos 230
+ }
+set N34170000 [stack 0]
+ Dot {
+  name Dot44
+  note_font_size 20
+  xpos 454
+  ypos 230
+ }
+push $N340d7400
+ Dot {
+  name Dot42
+  note_font_size 20
+  xpos 221
+  ypos 228
+ }
+push $N6d8c000
+ Dot {
+  name Dot15
+  note_font_size 20
+  xpos 220
+  ypos 67
+ }
+push $N340d6800
+push $N6d44800
+push $N34102400
+ Dot {
+  name Dot7
+  note_font_size 20
+  xpos 102
+  ypos 152
+ }
+set N3419b000 [stack 0]
+push $N34126800
+ Dot {
+  name Dot45
+  note_font_size 20
+  xpos 636
+  ypos 152
+ }
+ BlinkScript {
+  inputs 8
+  ProgramGroup 1
+  KernelDescription "1 \"ZBuffer_V01_01\" iterate pixelWise 96c5d820503060fac27b8cab320f5c97fb28bac60f78aa981d9b7aca702660bb 9 \"format\" Read Point \"particles\" Read Point \"active\" Read Point \"particle_colour\" Read Point \"velocity\" Read Point \"velocityNext\" Read Point \"filterImage\" Read Random \"depth\" Read Random \"dst\" Write Random 20 \"Use Filter Image\" Bool 1 AA== \"Use Particle Colour\" Bool 1 AA== \"Use Depth Clipping\" Bool 1 AQ== \"Use Depth Mask\" Bool 1 AA== \"Use Particle Size\" Bool 1 AA== \"Safety\" Bool 1 AQ== \"Add Velocity\" Bool 1 AQ== \"Reduction\" Int 1 AQAAAA== \"Safety Limit\" Int 1 lgAAAA== \"Width\" Int 1 oAUAAA== \"Height\" Int 1 KgMAAA== \"Overscan\" Float 1 AAAAAA== \"Depth Range\" Float 1 AAB6RA== \"Particle Size\" Float 1 AACgQA== \"Horizontal Aperture\" Float 1 ppvEQQ== \"Focal Length\" Float 1 AABIQg== \"Near Clipping\" Float 1 zczMPQ== \"Far Clipping\" Float 1 AEAcRg== \"Camera Matrix\" Float 16 AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPw== \"Particle Matrix\" Float 16 AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPw=="
+  kernelSource "kernel ZBuffer_V01_01 : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead> format;\n  Image<eRead, eAccessPoint> particles;\n  Image<eRead, eAccessPoint> active;\n  Image<eRead, eAccessPoint> particle_colour;\n  Image<eRead, eAccessPoint> velocity;\n  Image<eRead, eAccessPoint> velocityNext;\n  Image<eRead, eAccessRandom, eEdgeClamped> filterImage;\n  Image<eRead, eAccessRandom> depth;\n  Image<eWrite, eAccessRandom> dst;\n\n\n  param:\n    bool use_filter;\n    bool use_pcolour;\n    bool use_zclip;\n    bool use_depth;\n    bool use_psize;\n    bool safety;\n    bool add_velocity;\n    int reduce;\n    int safety_limit;\n    int width;\n    int height;\n    float overscan;\n    float depth_max;\n    float size;\n    float haperture;\n    float focal;\n    float znear;\n    float zfar;\n    float4x4 camToWorldM;\n    float4x4 particleTransform;\n\n\n  local:\n    float4x4 worldToCamM;\n    float4x4 perspM;\n    int filterWidth;\n    int filterHeight;\n    float filterAspectWidth;\n    float filterAspectHeight;\n\n\n  // Multiplies a vector 4 by a 4x4 matrix (COLUMN ORDER) (Affine and homogenous)\n  float4 multVectMatrix( float4 vec, float4x4 M ) \{\n    float4 out;\n    out\[0]  = vec.x * M\[0]\[0] + vec.y * M\[0]\[1] + vec.z * M\[0]\[2] + M\[0]\[3];\n    out\[1]  = vec.x * M\[1]\[0] + vec.y * M\[1]\[1] + vec.z * M\[1]\[2] + M\[1]\[3];\n    out\[2]  = vec.x * M\[2]\[0] + vec.y * M\[2]\[1] + vec.z * M\[2]\[2] + M\[2]\[3];\n    float w = vec.x * M\[3]\[0] + vec.y * M\[3]\[1] + vec.z * M\[3]\[2] + M\[3]\[3];\n \n    if (w != 1.0f) \{ \n        out.x /= w; \n        out.y /= w; \n        out.z /= w; \n    \} \n\n    return out;\n  \}\n\n\n  void define() \{\n    defineParam( use_filter,        \"Use Filter Image\",       false );\n    defineParam( use_pcolour,       \"Use Particle Colour\",    false );\n    defineParam( use_zclip,         \"Use Depth Clipping\",     true );\n    defineParam( use_depth,         \"Use Depth Mask\",         false );\n    defineParam( use_psize,         \"Use Particle Size\",      false );\n    defineParam( safety,            \"Safety\",                 true );\n    defineParam( add_velocity,      \"Add Velocity\",           true );\n    defineParam( reduce,            \"Reduction\",              1 );\n    defineParam( safety_limit,      \"Safety Limit\",           150 );\n    defineParam( width,             \"Width\",                  1440 );\n    defineParam( height,            \"Height\",                 810 );\n    defineParam( overscan,          \"Overscan\",               0.0f );\n    defineParam( depth_max,         \"Depth Range\",            1000.0f );\n    defineParam( size,              \"Particle Size\",          5.0f );\n    defineParam( haperture,         \"Horizontal Aperture\",    24.576f );\n    defineParam( focal,             \"Focal Length\",           50.0f );\n    defineParam( znear,             \"Near Clipping\",          0.1f );\n    defineParam( zfar,              \"Far Clipping\",           10000.0f );\n    defineParam( camToWorldM,       \"Camera Matrix\",          float4x4(\n             1.0f,0.0f,0.0f,0.0f,\n             0.0f,1.0f,0.0f,0.0f,\n             0.0f,0.0f,1.0f,0.0f,\n             0.0f,0.0f,0.0f,1.0f\n             ));\n    defineParam( particleTransform, \"Particle Matrix\",        float4x4(\n             1.0f,0.0f,0.0f,0.0f,\n             0.0f,1.0f,0.0f,0.0f,\n             0.0f,0.0f,1.0f,0.0f,\n             0.0f,0.0f,0.0f,1.0f\n             ));\n  \}\n\n\n  void init() \{\n\n    // Matrix from world space to camera local space\n    worldToCamM = camToWorldM.invert();\n\n    // Filter size\n    filterWidth  = filterImage.bounds.width();\n    filterHeight = filterImage.bounds.height();\n    filterAspectWidth  = use_filter ? min( filterWidth / float( filterHeight ), 1.0f ) : 1.0f;\n    filterAspectHeight = use_filter ? min( filterHeight / float( filterWidth ), 1.0f ) : 1.0f;\n\n    // Output image aspect\n    float aspect = width / float( height );\n\n    // Corner co-ordinates of the viewing frustrum\n    float right = ( 0.5f * haperture / focal) * znear;\n    float left = -right;\n    float top = right / aspect;\n    float bottom = -top;\n\n    // Set the Perspective Matrix ( Fits camera space to screen space)\n    perspM\[0]\[0] = ( 2 * znear ) / ( right - left );\n    perspM\[0]\[2] = ( right + left ) / ( right - left );\n    perspM\[1]\[1] = ( 2 * znear ) / ( top - bottom );\n    perspM\[1]\[2] = ( top + bottom ) / ( top - bottom );\n    perspM\[2]\[2] = - ( ( zfar + znear ) / ( zfar - znear ) );\n    perspM\[2]\[3] = - ( ( 2 * zfar * znear ) / ( zfar - znear ) );\n    perspM\[3]\[2] = -1;\n\n  \}\n\n\n  void process( int2 pos ) \{\n\n    // OUTPUT WILL BE :\n    // RED (0)           = ACTIVE   : Only particles that are on screen / valid\n    // GREEN, BLUE (1,2) = VELOCITY : Motion Vector of the topmost particle\n    // ALPHA (3)         = DEPTH    : Depth of the topmost particle\n\n    // --- Convert to screen space, eliminating out of range points ---\n\n    // Ignore pixels that are not active or have 0 alpha\n    float4 exists = active();\n    if ( exists.x != 1.0f || ( use_pcolour && particle_colour(3) == 0.0f ) )\n      return;\n\n    float4 particle = particles();\n\n    // Ignore pixels outside of the input image or limited to the nth position\n    float id = ( pos.y * particles.bounds.width() + pos.x );\n    if ( !particles.bounds.inside( pos ) || fmod( id, float( reduce ) ) != 0.0f )\n      return;\n\n    // Transform the particle to desired location, then to camera local space\n    float4 particleSpace = multVectMatrix( particle, particleTransform );\n    float4 point_local = multVectMatrix( particleSpace, worldToCamM );\n\n    // Check if position is in front of camera\n    if ( point_local.z > 0 )\n      return;\n\n    // Transform position to screen space\n    float4 screen_center = multVectMatrix( point_local, perspM );\n\n    // Trim points outside of clipping planes\n    //if ( screen_center.x < -1.0f || 1.0f < screen_center.x || screen_center.y < -1.0f || 1.0f < screen_center.y )\n    //  return;\n    if ( use_zclip && ( screen_center.z < -1.0f || 1.0f < screen_center.z ) )\n      return;\n\n\n    // --- Target Position and Depth ---\n\n    // Fit screen space to NDC space ( 0 to 1 range ), multiply to get centerpoint pixel\n    float ct_x = ( screen_center.x + 1 ) * 0.5f * width + overscan;\n    float ct_y = ( screen_center.y + 1 ) * 0.5f * height + overscan;\n    if ( !dst.bounds.inside( ct_x, ct_y ) )\n      return;\n    // Normalise desired depth range ( 1 @ cam, 0 @ depth_max )\n    float zdepth = 1.0f + point_local.z / depth_max;\n\n\n    // --- Optional depth masking ---\n\n    // Clip points beyond the depth mask\n    if ( use_depth && depth_max != 0.0f ) \{\n      // Move this to filter size settings? More accurate, slower\n      int depth_x = floor( ( screen_center.x + 1 ) * 0.5f * depth.bounds.width() );\n      int depth_y = floor( ( screen_center.y + 1 ) * 0.5f * depth.bounds.height() );\n      float depth_mask = depth( depth_x, depth_y, 0 ); // Use channel_id as picked by user from a channel dropdown (r=0, g=1 etc...)\n      if ( zdepth < depth_mask )\n        return;\n    \}\n\n\n    // --- This particle may affect the image, and should be re-evaluated when calculating colour ---\n\n    dst( pos.x, pos.y, 0 ) = 1.0f;\n\n\n    // --- Pixel bounds on screen ---\n\n    // Add size to create a quad centered on the particle\n    // Can use just bottom left and top right for a non distorted plane\n    float psize = use_psize ? size * particle.w : size;\n    float4 botleft  = point_local - float4( psize * filterAspectWidth, psize * filterAspectHeight, 0.0f, 0.0f );\n    float4 topright = point_local + float4( psize * filterAspectWidth, psize * filterAspectHeight, 0.0f, 0.0f );\n\n    // Transform position to screen space\n    float4 screen_bl = multVectMatrix( botleft, perspM );\n    float4 screen_tr = multVectMatrix( topright, perspM );\n\n    // Fit screen space to NDC space ( 0 to 1 range ), multiply to get cornerpoints of particle\n    float bl_x = ( screen_bl.x + 1 ) * 0.5f * width + overscan;\n    float bl_y = ( screen_bl.y + 1 ) * 0.5f * height + overscan;\n    float tr_x = ( screen_tr.x + 1 ) * 0.5f * width + overscan;\n    float tr_y = ( screen_tr.y + 1 ) * 0.5f * height + overscan;\n\n\n    // --- Velocity ---\n\n    float2 out_vel = 0.0f;\n    if ( add_velocity ) \{\n      // Calculate position from previous frame, project, and trace screen space vector motion\n      float4 vel = velocity();\n      float4 prev = particle - vel;\n      float4 next = particle + velocityNext();\n\n      // Smooth derivative of the particle at current point\n      float4 dir = prev - next;\n      // Apply velocity length to smoothed direction\n      dir\[3] = 0.0f;\n      vel\[3] = 0.0f;\n      dir = normalize(dir) * length(vel);\n\n      // Move new end position to screen space\n      particleSpace = multVectMatrix( particle + dir, particleTransform );\n      point_local = multVectMatrix( particleSpace, worldToCamM );\n      screen_center = multVectMatrix( point_local, perspM );\n\n      // Calculate screen velocity\n      float last_x = ( screen_center.x + 1 ) * 0.5f * width + overscan;\n      float last_y = ( screen_center.y + 1 ) * 0.5f * height + overscan;\n      out_vel = float2( ct_x - last_x, ct_y - last_y );\n    \}\n\n\n    // --- Iteration over affected pixels, set output ---\n\n    // Range of pixels to be set, starting from bottom left\n    int2 start = int2( floor( bl_x ), floor( bl_y ) );\n    int2 range = int2( floor( tr_x ), floor( tr_y ) ) - start;\n\n    // Limit maximum size to safety limit : prevents timeout crashes\n    if ( safety && ( range.x > safety_limit || range.y > safety_limit ) ) \{\n      start += int2( max( 0, ( range.x - safety_limit ) / 2 ), max( 0, ( range.y - safety_limit ) / 2 ) );\n      range = int2( min( safety_limit, range.x ), min( safety_limit, range.y ) );\n    \}\n\n    for ( int x = 0; x <= range.x; x++ ) \{\n      for ( int y = 0; y <= range.y; y++ ) \{\n\n        // Current output pixel\n        int2 out = int2( start.x + x, start.y + y );\n\n        if ( dst.bounds.inside( out) ) \{\n\n          // Exit if existing pixel is closer than current pixel\n          float existing_depth = dst( out.x, out.y, 3 );\n          if ( existing_depth > zdepth )\n            continue;\n\n          // --- Filter Image Values ---\n\n          if ( use_filter ) \{\n            // Fit the new size to the filter image, exit if 0 alpha\n            float filterX = ( x / float( range.x ) ) * filterWidth;\n            float filterY = ( y / float( range.y ) ) * filterHeight;\n            float4 filter_value = bilinear( filterImage, filterX, filterY );\n            if ( filter_value.w <= 0.0f )\n              continue;\n          \}\n\n          // Multiple passes\n          dst( out.x, out.y, 1 ) = out_vel.x;\n          dst( out.x, out.y, 2 ) = out_vel.y;\n          dst( out.x, out.y, 3 ) = zdepth;\n        \}\n      \}\n    \}\n  \n  \}\n\n\};"
+  rebuild ""
+  "ZBuffer_V01_01_Use Filter Image" {{parent.use_filter}}
+  "ZBuffer_V01_01_Use Particle Colour" {{parent.use_pcol}}
+  "ZBuffer_V01_01_Use Depth Clipping" {{parent.use_zclip}}
+  "ZBuffer_V01_01_Use Depth Mask" {{parent.use_zmask}}
+  "ZBuffer_V01_01_Use Particle Size" {{parent.use_psize}}
+  ZBuffer_V01_01_Safety {{parent.safety}}
+  "ZBuffer_V01_01_Add Velocity" {{parent.add_velocity}}
+  ZBuffer_V01_01_Reduction {{parent.nth}}
+  "ZBuffer_V01_01_Safety Limit" {{parent.safety_limit}}
+  ZBuffer_V01_01_Width {{parent.OUTPUT_FORMAT.width}}
+  ZBuffer_V01_01_Height {{parent.OUTPUT_FORMAT.height}}
+  ZBuffer_V01_01_Overscan {{parent.overscan}}
+  "ZBuffer_V01_01_Depth Range" {{parent.depth_range}}
+  "ZBuffer_V01_01_Particle Size" {{parent.psize}}
+  "ZBuffer_V01_01_Horizontal Aperture" {{"\[topnode group.input0].haperture"}}
+  "ZBuffer_V01_01_Focal Length" {{"\[topnode group.input0].focal"}}
+  "ZBuffer_V01_01_Near Clipping" {{"\[topnode group.input0].near"}}
+  "ZBuffer_V01_01_Far Clipping" {{"\[topnode group.input0].far"}}
+  "ZBuffer_V01_01_Camera Matrix" {
+      {{"\[topnode group.input0].matrix.0"} {"\[topnode group.input0].matrix.1"} {"\[topnode group.input0].matrix.2"} {"parent.rot_only ? 0 : \[topnode group.input0].matrix.3"}}
+      {{"\[topnode group.input0].matrix.4"} {"\[topnode group.input0].matrix.5"} {"\[topnode group.input0].matrix.6"} {"parent.rot_only ? 0 : \[topnode group.input0].matrix.7"}}
+      {{"\[topnode group.input0].matrix.8"} {"\[topnode group.input0].matrix.9"} {"\[topnode group.input0].matrix.10"} {"parent.rot_only ? 0 : \[topnode group.input0].matrix.11"}}
+      {{"\[topnode group.input0].matrix.12"} {"\[topnode group.input0].matrix.13"} {"\[topnode group.input0].matrix.14"} {"\[topnode group.input0].matrix.15"}}
+    }
+  "ZBuffer_V01_01_Particle Matrix" {
+      {{parent.TransformGeo1.matrix.0} {parent.TransformGeo1.matrix.1} {parent.TransformGeo1.matrix.2} {parent.TransformGeo1.matrix.3}}
+      {{parent.TransformGeo1.matrix.4} {parent.TransformGeo1.matrix.5} {parent.TransformGeo1.matrix.6} {parent.TransformGeo1.matrix.7}}
+      {{parent.TransformGeo1.matrix.8} {parent.TransformGeo1.matrix.9} {parent.TransformGeo1.matrix.10} {parent.TransformGeo1.matrix.11}}
+      {{parent.TransformGeo1.matrix.12} {parent.TransformGeo1.matrix.13} {parent.TransformGeo1.matrix.14} {parent.TransformGeo1.matrix.15}}
+    }
+  name ZBUFFER
+  xpos 305
+  ypos 142
+ }
+ Dot {
+  name Dot33
+  note_font_size 20
+  xpos 339
+  ypos 496
+ }
+set N3419a400 [stack 0]
+ Dot {
+  name Dot30
+  note_font_size 20
+  xpos 206
+  ypos 496
+ }
+ Dot {
+  name Dot34
+  note_font_size 20
+  xpos 206
+  ypos 885
+ }
+set N5a18fc00 [stack 0]
+ Dot {
+  name Dot35
+  note_font_size 20
+  xpos 206
+  ypos 992
+ }
+push $N5a18fc00
+push $N34171000
+ Dot {
+  name Dot10
+  note_font_size 20
+  xpos 1175
+  ypos 493
+ }
+ Dot {
+  name Dot14
+  note_font_size 20
+  xpos 572
+  ypos 493
+ }
+push $N34170000
+ Dot {
+  name Dot1
+  note_font_size 20
+  xpos 767
+  ypos 601
+ }
+push $N34146800
+push $N3419b000
+ Dot {
+  name Dot5
+  note_font_size 20
+  xpos 102
+  ypos 601
+ }
+push $N3419a400
+ BlinkScript {
+  inputs 5
+  ProgramGroup 1
+  KernelDescription "1 \"MAIN_V01_01\" iterate pixelWise c2df4e799b5095d774dd98804cb250e2f9eebdd6072cd2013d5330ae48714bb8 6 \"prebuffer\" Read Random \"particles\" Read Point \"particle_colour\" Read Point \"filterImage\" Read Random \"depth\" Read Random \"dst\" Write Random 20 \"Use Filter Image\" Bool 1 AA== \"Use Particle Colour\" Bool 1 AA== \"Use Depth Clipping\" Bool 1 AQ== \"Use Depth Mask\" Bool 1 AA== \"Use Particle Size\" Bool 1 AA== \"Safety\" Bool 1 AQ== \"Edge Disable\" Bool 1 AA== \"Reduction\" Int 1 AQAAAA== \"Safety Limit\" Int 1 lgAAAA== \"Width\" Int 1 oAUAAA== \"Height\" Int 1 KgMAAA== \"Overscan\" Float 1 AAAAAA== \"Depth Range\" Float 1 AAB6RA== \"Particle Size\" Float 1 AACgQA== \"Horizontal Aperture\" Float 1 ppvEQQ== \"Focal Length\" Float 1 AABIQg== \"Near Clipping\" Float 1 zczMPQ== \"Far Clipping\" Float 1 AEAcRg== \"Camera Matrix\" Float 16 AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPw== \"Particle Matrix\" Float 16 AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPw=="
+  kernelSource "kernel MAIN_V01_01 : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessRandom> prebuffer;\n  Image<eRead, eAccessPoint> particles;\n  Image<eRead, eAccessPoint> particle_colour;\n  Image<eRead, eAccessRandom, eEdgeClamped> filterImage;\n  Image<eRead, eAccessRandom> depth;\n  Image<eWrite, eAccessRandom> dst;\n\n\n  param:\n    bool use_filter;\n    bool use_pcolour;\n    bool use_zclip;\n    bool use_depth;\n    bool use_psize;\n    bool safety;\n    bool edge_disable;\n    int reduce;\n    int safety_limit;\n    int width;\n    int height;\n    float overscan;\n    float depth_max;\n    float size;\n    float haperture;\n    float focal;\n    float znear;\n    float zfar;\n    float4x4 camToWorldM;\n    float4x4 particleTransform;\n\n\n  local:\n    float4x4 worldToCamM;\n    float4x4 perspM;\n    int filterWidth;\n    int filterHeight;\n    float filterAspectWidth;\n    float filterAspectHeight;\n\n\n  // Multiplies a vector 4 by a 4x4 matrix (COLUMN ORDER) (Affine and homogenous)\n  float4 multVectMatrix( float4 vec, float4x4 M ) \{\n    float4 out;\n    out\[0]  = vec.x * M\[0]\[0] + vec.y * M\[0]\[1] + vec.z * M\[0]\[2] + M\[0]\[3];\n    out\[1]  = vec.x * M\[1]\[0] + vec.y * M\[1]\[1] + vec.z * M\[1]\[2] + M\[1]\[3];\n    out\[2]  = vec.x * M\[2]\[0] + vec.y * M\[2]\[1] + vec.z * M\[2]\[2] + M\[2]\[3];\n    float w = vec.x * M\[3]\[0] + vec.y * M\[3]\[1] + vec.z * M\[3]\[2] + M\[3]\[3];\n \n    if (w != 1.0f) \{ \n        out.x /= w; \n        out.y /= w; \n        out.z /= w; \n    \} \n\n    return out;\n  \}\n\n\n  void define() \{\n    defineParam( use_filter,        \"Use Filter Image\",       false );\n    defineParam( use_pcolour,       \"Use Particle Colour\",    false );\n    defineParam( use_zclip,         \"Use Depth Clipping\",     true );\n    defineParam( use_depth,         \"Use Depth Mask\",         false );\n    defineParam( use_psize,         \"Use Particle Size\",      false );\n    defineParam( safety,            \"Safety\",                 true );\n    defineParam( edge_disable,      \"Edge Disable\",           false );\n    defineParam( reduce,            \"Reduction\",              1 );\n    defineParam( safety_limit,      \"Safety Limit\",           150 );\n    defineParam( width,             \"Width\",                  1440 );\n    defineParam( height,            \"Height\",                 810 );\n    defineParam( overscan,          \"Overscan\",               0.0f );\n    defineParam( depth_max,         \"Depth Range\",            1000.0f );\n    defineParam( size,              \"Particle Size\",          5.0f );\n    defineParam( haperture,         \"Horizontal Aperture\",    24.576f );\n    defineParam( focal,             \"Focal Length\",           50.0f );\n    defineParam( znear,             \"Near Clipping\",          0.1f );\n    defineParam( zfar,              \"Far Clipping\",           10000.0f );\n    defineParam( camToWorldM,       \"Camera Matrix\",          float4x4(\n             1.0f,0.0f,0.0f,0.0f,\n             0.0f,1.0f,0.0f,0.0f,\n             0.0f,0.0f,1.0f,0.0f,\n             0.0f,0.0f,0.0f,1.0f\n             ));\n    defineParam( particleTransform, \"Particle Matrix\",        float4x4(\n             1.0f,0.0f,0.0f,0.0f,\n             0.0f,1.0f,0.0f,0.0f,\n             0.0f,0.0f,1.0f,0.0f,\n             0.0f,0.0f,0.0f,1.0f\n             ));\n  \}\n\n\n  void init() \{\n\n    // Matrix from world space to camera local space\n    worldToCamM = camToWorldM.invert();\n\n    // Filter size\n    filterWidth  = filterImage.bounds.width();\n    filterHeight = filterImage.bounds.height();\n    filterAspectWidth  = use_filter ? min( filterWidth / float( filterHeight ), 1.0f ) : 1.0f;\n    filterAspectHeight = use_filter ? min( filterHeight / float( filterWidth ), 1.0f ) : 1.0f;\n\n    // Output image aspect\n    float aspect = width / float( height );\n\n    // Corner co-ordinates of the viewing frustrum\n    float right = ( 0.5f * haperture / focal) * znear;\n    float left = -right;\n    float top = right / aspect;\n    float bottom = -top;\n\n    // Set the Perspective Matrix ( Fits camera space to screen space)\n    perspM\[0]\[0] = ( 2 * znear ) / ( right - left );\n    perspM\[0]\[2] = ( right + left ) / ( right - left );\n    perspM\[1]\[1] = ( 2 * znear ) / ( top - bottom );\n    perspM\[1]\[2] = ( top + bottom ) / ( top - bottom );\n    perspM\[2]\[2] = - ( ( zfar + znear ) / ( zfar - znear ) );\n    perspM\[2]\[3] = - ( ( 2 * zfar * znear ) / ( zfar - znear ) );\n    perspM\[3]\[2] = -1;\n\n  \}\n\n\n  void process( int2 pos ) \{\n\n    // --- Convert to screen space, eliminating out of range points ---\n\n    // Ignore pixels that are not active ( As precalculated by ZBuffer )\n    float4 pre_buffer = prebuffer( pos.x, pos.y );\n    if ( pre_buffer.x != 1.0f )\n      return;\n\n    float4 particle = particles();\n\n    // Transform the particle to desired location, then to camera local space\n    float4 particleSpace = multVectMatrix( particle, particleTransform );\n    float4 point_local = multVectMatrix( particleSpace, worldToCamM );\n\n    // Transform position to screen space\n    float4 screen_center = multVectMatrix( point_local, perspM );\n\n    // --- Target Position and Depth ---\n\n    // Fit screen space to NDC space ( 0 to 1 range ), multiply to get centerpoint pixel\n    float ct_x = ( screen_center.x + 1 ) * 0.5f * width + overscan;\n    float ct_y = ( screen_center.y + 1 ) * 0.5f * height + overscan;\n    // Normalise desired depth range ( 1 @ cam, 0 @ depth_max )\n    float zdepth = 1.0f + point_local.z / depth_max;\n\n    // --- Default colour ---\n\n    // Set default output colour\n    float4 out_colour = zdepth;\n    out_colour\[3] = 1.0f;\n    if ( use_pcolour ) \{\n      float4 pcol = particle_colour();\n      out_colour *= pcol;\n      out_colour\[3] = pcol.w;\n    \}\n\n    // --- Pixel bounds on screen ---\n\n    // Add size to create a quad centered on the particle\n    // Can use just bottom left and top right for a non distorted plane\n    float psize = use_psize ? size * particle.w : size;\n    float4 botleft  = point_local - float4( psize * filterAspectWidth, psize * filterAspectHeight, 0.0f, 0.0f );\n    float4 topright = point_local + float4( psize * filterAspectWidth, psize * filterAspectHeight, 0.0f, 0.0f );\n\n    // Transform position to screen space\n    float4 screen_bl = multVectMatrix( botleft, perspM );\n    float4 screen_tr = multVectMatrix( topright, perspM );\n\n    // Fit screen space to NDC space ( 0 to 1 range ), multiply to get cornerpoints of particle\n    float bl_x = ( screen_bl.x + 1 ) * 0.5f * width + overscan;\n    float bl_y = ( screen_bl.y + 1 ) * 0.5f * height + overscan;\n    float tr_x = ( screen_tr.x + 1 ) * 0.5f * width + overscan;\n    float tr_y = ( screen_tr.y + 1 ) * 0.5f * height + overscan;\n\n\n    // --- Iteration over affected pixels, set output ---\n\n    // Range of pixels to be set, starting from bottom left\n    int2 start = int2( floor( bl_x ), floor( bl_y ) );\n    int2 range = int2( floor( tr_x ), floor( tr_y ) ) - start;\n\n    // Limit maximum size to safety limit : prevents timeout crashes\n    bool edging = false;\n    if ( safety ) \{\n      if ( range.x > safety_limit || range.y > safety_limit ) \{\n        start += int2( max( 0, ( range.x - safety_limit ) / 2 ), max( 0, ( range.y - safety_limit ) / 2 ) );\n        range = int2( safety_limit, safety_limit );\n        edging = !edge_disable;\n      \}\n    \}\n\n\n    for ( int x = 0; x <= range.x; x++ ) \{\n      for ( int y = 0; y <= range.y; y++ ) \{\n\n        // Current output pixel\n        int2 out = int2( start.x + x, start.y + y );\n\n        if ( dst.bounds.inside( out) ) \{\n\n          // Sets a red border for any particle above the size limit\n          if ( edging && ( x == 0 || y == 0 || x == range.x || y == range.y ) ) \{\n            dst( out.x, out.y ) = float4( 1.0f, 0.0f, 0.0f, 0.0f );\n            continue;\n          \}\n\n          // Percentage area covered\n          float distanceFromLeft  = min( out.x + 1 - bl_x, 1.0f );\n          float distanceFromBot   = min( out.y + 1 - bl_y, 1.0f );\n          float distanceFromRight = min( tr_x - out.x, 1.0f );\n          float distanceFromTop   = min( tr_y - out.y, 1.0f );\n\n          float4 result = out_colour * ( distanceFromBot * distanceFromLeft * distanceFromRight * distanceFromTop );\n          \n\n          // --- Filter Image Values ---\n\n          if ( use_filter ) \{\n            // Fit the new size to the filter image, exit if 0 alpha\n            float filterX = ( x / float( range.x ) ) * filterWidth;\n            float filterY = ( y / float( range.y ) ) * filterHeight;\n            float4 filter_value = bilinear( filterImage, filterX, filterY );\n            if ( filter_value.w <= 0.0f )\n              continue;\n            for ( int component = 0; component < 4; component++ )\n              result\[ component ] *= filter_value\[ component ];\n          \}\n\n\n          // Prevents NaN pixels\n          if ( result.w != result.w )\n            continue;\n          for ( int component = 0; component < 3; component++ ) \{\n            if ( result\[ component ] != result\[ component ] )\n              result\[ component ] == 0.0f;\n          \}\n          result\[3] = min( result.w, 1.0f );\n\n          // --- Ensure foremost pixel gets full colour ---\n          \n          // Fit top value over pixel\n          float front_depth = prebuffer( out.x, out.y, 3 ); // Particle closest to cam's depth\n          float4 existing = dst( out.x, out.y ); // Already written rgba values\n          float remaining_alpha = 1.0f - existing.w;\n          if ( zdepth == front_depth ) \{\n\n            // If there's enough space for the current value, add it in\n            if ( remaining_alpha >= result.w ) \{\n                dst( out.x, out.y ) += result;\n            \}\n            // Else squash the existing values and add the current value\n            else \{\n              existing *= ( 1.0f - result.w ) / existing.w;\n              dst( out.x, out.y ) = result + existing;\n            \}\n            continue;\n          \}\n\n\n          // --- Combine alphas into single pixel --- \n\n          // Exit if target alpha is full\n          if ( remaining_alpha <= 0.0f )\n            continue;\n\n          // Cap alpha per pixel at 1\n          if ( result.w > remaining_alpha ) \{\n            float partial = remaining_alpha / result.w;\n            result *= partial;\n            result\[3] = remaining_alpha;\n          \}\n\n          // Add result\n          dst( out.x, out.y ) += result;\n        \}\n      \}\n    \}\n  \n  \}\n\n\};"
+  rebuild ""
+  "MAIN_V01_01_Use Filter Image" {{parent.use_filter}}
+  "MAIN_V01_01_Use Particle Colour" {{parent.use_pcol}}
+  "MAIN_V01_01_Use Depth Clipping" {{parent.use_zclip}}
+  "MAIN_V01_01_Use Depth Mask" {{parent.use_zmask}}
+  "MAIN_V01_01_Use Particle Size" {{parent.use_psize}}
+  MAIN_V01_01_Safety {{parent.safety}}
+  MAIN_V01_01_Reduction {{parent.nth}}
+  "MAIN_V01_01_Safety Limit" {{parent.safety_limit}}
+  MAIN_V01_01_Width {{parent.OUTPUT_FORMAT.width}}
+  MAIN_V01_01_Height {{parent.OUTPUT_FORMAT.height}}
+  MAIN_V01_01_Overscan {{parent.overscan}}
+  "MAIN_V01_01_Depth Range" {{parent.depth_range}}
+  "MAIN_V01_01_Particle Size" {{parent.psize}}
+  "MAIN_V01_01_Horizontal Aperture" {{"\[topnode group.input0].haperture"}}
+  "MAIN_V01_01_Focal Length" {{"\[topnode group.input0].focal"}}
+  "MAIN_V01_01_Near Clipping" {{"\[topnode group.input0].near"}}
+  "MAIN_V01_01_Far Clipping" {{"\[topnode group.input0].far"}}
+  "MAIN_V01_01_Camera Matrix" {
+      {{"\[topnode group.input0].matrix.0"} {"\[topnode group.input0].matrix.1"} {"\[topnode group.input0].matrix.2"} {"parent.rot_only ? 0 : \[topnode group.input0].matrix.3"}}
+      {{"\[topnode group.input0].matrix.4"} {"\[topnode group.input0].matrix.5"} {"\[topnode group.input0].matrix.6"} {"parent.rot_only ? 0 : \[topnode group.input0].matrix.7"}}
+      {{"\[topnode group.input0].matrix.8"} {"\[topnode group.input0].matrix.9"} {"\[topnode group.input0].matrix.10"} {"parent.rot_only ? 0 : \[topnode group.input0].matrix.11"}}
+      {{"\[topnode group.input0].matrix.12"} {"\[topnode group.input0].matrix.13"} {"\[topnode group.input0].matrix.14"} {"\[topnode group.input0].matrix.15"}}
+    }
+  "MAIN_V01_01_Particle Matrix" {
+      {{parent.TransformGeo1.matrix.0} {parent.TransformGeo1.matrix.1} {parent.TransformGeo1.matrix.2} {parent.TransformGeo1.matrix.3}}
+      {{parent.TransformGeo1.matrix.4} {parent.TransformGeo1.matrix.5} {parent.TransformGeo1.matrix.6} {parent.TransformGeo1.matrix.7}}
+      {{parent.TransformGeo1.matrix.8} {parent.TransformGeo1.matrix.9} {parent.TransformGeo1.matrix.10} {parent.TransformGeo1.matrix.11}}
+      {{parent.TransformGeo1.matrix.12} {parent.TransformGeo1.matrix.13} {parent.TransformGeo1.matrix.14} {parent.TransformGeo1.matrix.15}}
+    }
+  name MAIN
+  xpos 305
+  ypos 591
+ }
+ Remove {
+  operation keep
+  channels rgba
+  name Remove2
+  xpos 305
+  ypos 782
+ }
+ Copy {
+  inputs 2
+  from3 rgba.alpha
+  to3 depth.Z
+  name Copy3
+  label ADD_DEPTH
+  xpos 305
+  ypos 862
+  disable {{"1 - parent.add_depth"}}
+ }
+ Copy {
+  inputs 2
+  from0 rgba.green
+  to0 forward.u
+  from1 rgba.blue
+  to1 forward.v
+  name Copy4
+  label ADD_VELOCITY
+  xpos 305
+  ypos 969
+  disable {{"1 - parent.add_velocity"}}
+ }
+ Switch {
+  inputs 2
+  which {{parent.single}}
+  name Switch4
+  xpos 305
+  ypos 1192
+ }
+ Reformat {
+  format {{{parent.OUTPUT_FORMAT.format}}}
+  resize none
+  pbb true
+  name Reformat2
+  xpos 305
+  ypos 1244
+ }
+ Output {
+  name Output1
+  xpos 305
+  ypos 1444
+ }
+end_group
